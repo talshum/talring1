@@ -411,10 +411,10 @@ async function processCommand(topic, message) {
 
 function initMqtt() {
     const mqtt = mqttApi.connect({
-        host:CONFIG.host,
-        port:CONFIG.port,
-        username: CONFIG.mqtt_user,
-        password: CONFIG.mqtt_pass
+        host:process.env.MQTT || '',
+        port:process.env.PORT || '',
+        username: process.env.MQTT_USER || '',
+        password: process.env.MQTT_PW || ''
     });
     return mqtt
 }
@@ -423,7 +423,7 @@ function initMqtt() {
 
 // Get Configuration from file
 try {
-    CONFIG = require('./config')
+    CONFIG = require('./config2')
     ringTopic = CONFIG.ring_topic ? CONFIG.ring_topic : 'ring'
     hassTopic = CONFIG.hass_topic
 } catch (e) {
@@ -438,8 +438,8 @@ const main = async() => {
     try {
         // Get alarms via API
         ringAlarms = await getAlarms({
-            email: CONFIG.ring_user,
-            password: CONFIG.ring_pass,
+            email: process.env.RING_USERNAME || '',
+            password: process.env.RING_PASSPHRASE || '',
         })
 
         // Start monitoring alarm connection state
